@@ -6,6 +6,7 @@ import App from "./App";
 import { store } from "./redux/store";
 
 import "./styles/global.css";
+import "./styles/homepage.css";
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
