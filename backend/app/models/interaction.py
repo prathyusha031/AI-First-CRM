@@ -68,45 +68,24 @@ class Interaction(Base):
     )
 
     hcp = relationship(
-    "HCP",
-    back_populates="interactions",
-)
+        "HCP",
+        back_populates="interactions",
+    )
 
-materials = relationship(
-    "Material",
-    back_populates="interaction",
-    cascade="all, delete-orphan",
-)
+    materials = relationship(
+        "Material",
+        back_populates="interaction",
+        cascade="all, delete-orphan",
+    )
 
-samples = relationship(
-    "Sample",
-    back_populates="interaction",
-    cascade="all, delete-orphan",
-)
+    samples = relationship(
+        "Sample",
+        back_populates="interaction",
+        cascade="all, delete-orphan",
+    )
 
-followups = relationship(
-    "FollowUp",
-    back_populates="interaction",
-    cascade="all, delete-orphan",
-)
-
-    # These relationships will be enabled
-    # after we create the corresponding models.
-
-    # materials = relationship(
-    #     "Material",
-    #     back_populates="interaction",
-    #     cascade="all, delete-orphan",
-    # )
-
-    # samples = relationship(
-    #     "Sample",
-    #     back_populates="interaction",
-    #     cascade="all, delete-orphan",
-    # )
-
-    # followups = relationship(
-    #     "FollowUp",
-    #     back_populates="interaction",
-    #     cascade="all, delete-orphan",
-    # )
+    followups = relationship(
+        "FollowUp",
+        back_populates="interaction",
+        cascade="all, delete-orphan",
+    )

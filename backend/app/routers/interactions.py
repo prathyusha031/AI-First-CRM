@@ -1,7 +1,10 @@
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, Depends
+from sqlalchemy.orm import Session
 
+from app.database.database import get_db
 from app.graph import crm_graph
 from app.schemas.interaction import InteractionCreate
+from app.services.interaction_service import save_interaction
 
 router = APIRouter(
     prefix="/interactions",
@@ -10,11 +13,13 @@ router = APIRouter(
 
 
 @router.post("/log")
-def log_interaction(request: InteractionCreate):
+def log_interaction(
+    request: InteractionCreate,
+    db: Session = Depends(get_db),
+):
 
     state = {
-        "user_input": (
-            f"""
+        "user_input": f"""
 HCP Name: {request.hcp_name}
 
 Interaction Type: {request.interaction_type}
@@ -36,8 +41,7 @@ Outcomes:
 
 Follow Up:
 {request.follow_up_actions}
-"""
-        ),
+""",
         "action": "log_interaction",
         "structured_data": None,
         "response": None,
@@ -52,4 +56,11 @@ Follow Up:
             detail=result["error"],
         )
 
-    return result["structured_data"]
+    structured_data = result["structured_data"]
+
+    save_interaction(
+        db,
+        structured_data,
+    )
+
+    return structured_data
