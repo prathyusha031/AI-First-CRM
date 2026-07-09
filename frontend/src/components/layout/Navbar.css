@@ -1,0 +1,77 @@
+.navbar{
+    height:74px;
+    background:#ffffff;
+
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+
+    padding:0 34px;
+
+    border-bottom:1px solid #eef2f7;
+
+    box-shadow:
+        0 4px 18px rgba(15,23,42,.04);
+
+    position:sticky;
+    top:0;
+    z-index:100;
+}
+
+.navbar-left{
+    display:flex;
+    align-items:center;
+    gap:16px;
+}
+
+.logo{
+    width:48px;
+    height:48px;
+
+    border-radius:14px;
+
+    background:linear-gradient(135deg,#2563eb,#3b82f6);
+
+    display:flex;
+    justify-content:center;
+    align-items:center;
+
+    color:white;
+    font-weight:700;
+    font-size:20px;
+
+    box-shadow:
+        0 10px 24px rgba(37,99,235,.22);
+}
+
+.navbar-left h1{
+    margin:0;
+    font-size:20px;
+    font-weight:700;
+    color:#16213e;
+    letter-spacing:-0.3px;
+}
+
+.navbar-left span{
+    display:block;
+    margin-top:3px;
+
+    font-size:13px;
+    color:#64748b;
+    font-weight:500;
+}
+
+.badge{
+    padding:10px 18px;
+
+    border-radius:999px;
+
+    background:#eff6ff;
+
+    color:#2563eb;
+
+    border:1px solid #dbeafe;
+
+    font-size:14px;
+    font-weight:600;
+}

@@ -1,17 +1,18 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
-  hcpName: "",
-  interactionType: "",
-  date: "",
-  time: "",
+  hcp_name: "",
+  interaction_type: "",
+  interaction_date: "",
+  interaction_time: "",
   attendees: "",
-  topics: "",
-  materialsShared: [],
-  samplesDistributed: [],
+  topics_discussed: "",
   sentiment: "",
   outcomes: "",
-  followUp: "",
+  follow_up_actions: "",
+  materials: [],
+  samples: [],
+  followups: [],
   loading: false,
   error: null,
 };

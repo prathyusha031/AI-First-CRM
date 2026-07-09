@@ -21,20 +21,18 @@ function InteractionForm() {
 
             <input
               type="text"
-              value={interaction.hcpName}
+              value={interaction.hcp_name || ""}
               placeholder="Search or select HCP..."
               disabled
               readOnly
             />
-
           </div>
 
           <div className="form-group">
-
             <label>Interaction Type</label>
 
             <select
-              value={interaction.interactionType}
+              value={interaction.interaction_type || ""}
               disabled
             >
               <option value="">Select</option>
@@ -54,8 +52,8 @@ function InteractionForm() {
             <label>Date</label>
 
             <input
-              type="date"
-              value={interaction.date}
+              type="text"
+              value={interaction.interaction_date || ""}
               disabled
               readOnly
             />
@@ -67,8 +65,8 @@ function InteractionForm() {
             <label>Time</label>
 
             <input
-              type="time"
-              value={interaction.time}
+              type="text"
+              value={interaction.interaction_time || ""}
               disabled
               readOnly
             />
@@ -83,7 +81,7 @@ function InteractionForm() {
 
           <input
             type="text"
-            value={interaction.attendees}
+            value={interaction.attendees || ""}
             placeholder="Enter names..."
             disabled
             readOnly
@@ -97,7 +95,7 @@ function InteractionForm() {
 
           <textarea
             rows="5"
-            value={interaction.topics}
+            value={interaction.topics_discussed || ""}
             placeholder="Discussion topics..."
             disabled
             readOnly
@@ -126,8 +124,8 @@ function InteractionForm() {
 
             <div className="placeholder-text">
 
-              {interaction.materialsShared.length
-                ? interaction.materialsShared.join(", ")
+              {interaction.materials?.length
+                ? interaction.materials.join(", ")
                 : "No materials added."}
 
             </div>
@@ -148,8 +146,8 @@ function InteractionForm() {
 
             <div className="placeholder-text">
 
-              {interaction.samplesDistributed.length
-                ? interaction.samplesDistributed.join(", ")
+              {interaction.samples?.length
+                ? interaction.samples.join(", ")
                 : "No samples added."}
 
             </div>
@@ -210,7 +208,7 @@ function InteractionForm() {
 
           <textarea
             rows="4"
-            value={interaction.outcomes}
+            value={interaction.outcomes || ""}
             disabled
             readOnly
           />
@@ -223,7 +221,7 @@ function InteractionForm() {
 
           <textarea
             rows="4"
-            value={interaction.followUp}
+            value={interaction.follow_up_actions || ""}
             disabled
             readOnly
           />

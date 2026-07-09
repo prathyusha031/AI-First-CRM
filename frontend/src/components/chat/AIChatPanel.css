@@ -1,61 +1,171 @@
-.chat-container {
-  padding: 20px;
-  flex: 1;
+.assistant-panel{
+    display:flex;
+    flex-direction:column;
+    height:100%;
+    background:#fff;
 }
 
-.assistant-message {
-  background: #f8fafc;
-  border: 1px solid #e5e7eb;
-  border-radius: 10px;
-  padding: 14px;
+.chat-container{
+    flex:1;
+    overflow-y:auto;
+    padding:22px;
+    background:#fff;
 }
 
-.assistant-message p {
-  font-size: 14px;
-  font-weight: 600;
-  color: #374151;
-  margin-bottom: 10px;
+.chat-window{
+    display:flex;
+    flex-direction:column;
+    gap:18px;
 }
 
-.assistant-message span {
-  font-size: 13px;
-  color: #6b7280;
-  line-height: 1.6;
+.message{
+    display:flex;
+    align-items:flex-start;
+    gap:12px;
 }
 
-.assistant-panel {
-    display: flex;
-    flex-direction: column;
+.message.user{
+    flex-direction:row-reverse;
 }
 
-.chat-container {
-    flex: 1;
-    overflow-y: auto;
-    padding: 20px;
+.avatar{
+    width:40px;
+    height:40px;
+    flex-shrink:0;
+
+    border-radius:50%;
+
+    background:linear-gradient(135deg,#2563eb,#3b82f6);
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+
+    color:#fff;
+    font-size:18px;
+
+    box-shadow:0 6px 14px rgba(37,99,235,.18);
 }
 
-.chat-footer {
-  margin-top: auto;
-  padding: 16px;
-  border-top: 1px solid #e5e7eb;
-  display: flex;
-  gap: 10px;
+.user .avatar{
+    background:#1f2937;
+    box-shadow:none;
 }
 
-.chat-footer input {
-  flex: 1;
-  height: 42px;
-  border: 1px solid #d1d5db;
-  border-radius: 8px;
-  padding: 0 12px;
+.bubble{
+    max-width:82%;
+    padding:16px 18px;
+
+    border-radius:18px;
+
+    box-shadow:
+        0 4px 16px rgba(15,23,42,.05);
 }
 
-.chat-footer button {
-  width: 70px;
-  border: none;
-  border-radius: 8px;
-  background: #2563eb;
-  color: white;
-  font-weight: 600;
-  cursor: pointer;
+.message:not(.user) .bubble{
+    background:#eaf6ff;
+    color:#1f2937;
+}
+
+.message.user .bubble{
+    background:#2563eb;
+    color:white;
+}
+
+.bubble strong{
+    display:block;
+    margin-bottom:8px;
+
+    font-size:15px;
+    font-weight:700;
+}
+
+.bubble p{
+    margin:0;
+    font-size:14px;
+    line-height:1.7;
+}
+
+.chat-footer{
+    background:#fff;
+    border-top:1px solid #edf2f7;
+    padding:18px 20px;
+}
+
+.chat-input{
+    display:flex;
+    align-items:flex-end;
+    gap:12px;
+}
+
+.chat-input textarea{
+    flex:1;
+
+    min-height:52px;
+    max-height:110px;
+
+    resize:none;
+
+    border:1px solid #dbe4ef;
+    border-radius:12px;
+
+    padding:14px 16px;
+
+    font-size:14px;
+    line-height:1.5;
+
+    background:#fbfcfe;
+
+    outline:none;
+
+    transition:.2s;
+}
+
+.chat-input textarea::placeholder{
+    color:#94a3b8;
+}
+
+.chat-input textarea:focus{
+    background:#fff;
+    border-color:#2563eb;
+    box-shadow:0 0 0 3px rgba(37,99,235,.08);
+}
+
+.chat-input button{
+    width:88px;
+    height:52px;
+
+    border:none;
+    border-radius:12px;
+
+    background:#2563eb;
+
+    color:#fff;
+
+    font-size:15px;
+    font-weight:600;
+
+    cursor:pointer;
+
+    transition:.2s;
+}
+
+.chat-input button:hover{
+    background:#1d4ed8;
+}
+
+.chat-input button:active{
+    transform:scale(.98);
+}
+
+.panel-title{
+    padding:26px 28px 18px;
+}
+
+.chat-container{
+    padding:24px 28px;
+}
+
+.chat-footer{
+    padding:18px 24px;
 }

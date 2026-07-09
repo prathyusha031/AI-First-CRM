@@ -3,7 +3,7 @@ from sqlalchemy.orm import Session
 
 from app.database.database import get_db
 from app.graph import crm_graph
-from app.schemas.interaction import InteractionCreate
+from app.schemas.interaction import ChatRequest
 from app.services.interaction_service import save_interaction
 
 router = APIRouter(
@@ -14,34 +14,12 @@ router = APIRouter(
 
 @router.post("/log")
 def log_interaction(
-    request: InteractionCreate,
+    request: ChatRequest,
     db: Session = Depends(get_db),
 ):
 
     state = {
-        "user_input": f"""
-HCP Name: {request.hcp_name}
-
-Interaction Type: {request.interaction_type}
-
-Date: {request.interaction_date}
-
-Time: {request.interaction_time}
-
-Attendees: {request.attendees}
-
-Topics Discussed:
-{request.topics_discussed}
-
-Sentiment:
-{request.sentiment}
-
-Outcomes:
-{request.outcomes}
-
-Follow Up:
-{request.follow_up_actions}
-""",
+        "user_input": request.message,
         "action": "log_interaction",
         "structured_data": None,
         "response": None,
@@ -59,8 +37,8 @@ Follow Up:
     structured_data = result["structured_data"]
 
     save_interaction(
-        db,
-        structured_data,
+        db=db,
+        data=structured_data,
     )
 
     return structured_data

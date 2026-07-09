@@ -48,6 +48,10 @@ User Input:
 
     try:
 
+        print("\n====================")
+        print(response.content)
+        print("====================\n")
+
         structured = json.loads(response.content)
 
         state["structured_data"] = structured
