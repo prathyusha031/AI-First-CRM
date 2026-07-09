@@ -1,6 +1,9 @@
+import { useSelector } from "react-redux";
 import "./InteractionForm.css";
 
 function InteractionForm() {
+  const interaction = useSelector((state) => state.interaction);
+
   return (
     <>
       <div className="panel-title">
@@ -12,55 +15,94 @@ function InteractionForm() {
         <h3 className="section-title">Interaction Details</h3>
 
         <div className="form-row">
+
           <div className="form-group">
             <label>HCP Name</label>
+
             <input
               type="text"
+              value={interaction.hcpName}
               placeholder="Search or select HCP..."
               disabled
+              readOnly
             />
+
           </div>
 
           <div className="form-group">
+
             <label>Interaction Type</label>
 
-            <select disabled>
-              <option>Meeting</option>
-              <option>Call</option>
-              <option>Email</option>
+            <select
+              value={interaction.interactionType}
+              disabled
+            >
+              <option value="">Select</option>
+              <option value="Meeting">Meeting</option>
+              <option value="Call">Call</option>
+              <option value="Email">Email</option>
             </select>
+
           </div>
+
         </div>
 
         <div className="form-row">
+
           <div className="form-group">
+
             <label>Date</label>
-            <input type="date" disabled />
+
+            <input
+              type="date"
+              value={interaction.date}
+              disabled
+              readOnly
+            />
+
           </div>
 
           <div className="form-group">
+
             <label>Time</label>
-            <input type="time" disabled />
+
+            <input
+              type="time"
+              value={interaction.time}
+              disabled
+              readOnly
+            />
+
           </div>
+
         </div>
 
         <div className="form-group">
+
           <label>Attendees</label>
+
           <input
             type="text"
-            placeholder="Enter names or search..."
+            value={interaction.attendees}
+            placeholder="Enter names..."
             disabled
+            readOnly
           />
+
         </div>
 
         <div className="form-group">
+
           <label>Topics Discussed</label>
 
           <textarea
             rows="5"
-            placeholder="Enter key discussion points..."
+            value={interaction.topics}
+            placeholder="Discussion topics..."
             disabled
+            readOnly
           />
+
         </div>
 
         <button
@@ -77,12 +119,17 @@ function InteractionForm() {
         </h3>
 
         <div className="form-group">
+
           <label>Materials Shared</label>
 
           <div className="inline-action">
 
             <div className="placeholder-text">
-              No materials added.
+
+              {interaction.materialsShared.length
+                ? interaction.materialsShared.join(", ")
+                : "No materials added."}
+
             </div>
 
             <button disabled>
@@ -90,15 +137,21 @@ function InteractionForm() {
             </button>
 
           </div>
+
         </div>
 
         <div className="form-group">
+
           <label>Samples Distributed</label>
 
           <div className="inline-action">
 
             <div className="placeholder-text">
-              No samples added.
+
+              {interaction.samplesDistributed.length
+                ? interaction.samplesDistributed.join(", ")
+                : "No samples added."}
+
             </div>
 
             <button disabled>
@@ -106,27 +159,44 @@ function InteractionForm() {
             </button>
 
           </div>
+
         </div>
 
         <hr className="divider" />
 
         <div className="form-group">
+
           <label>Observed/Inferred HCP Sentiment</label>
 
           <div className="radio-row">
 
             <label>
-              <input disabled type="radio" />
+              <input
+                type="radio"
+                checked={interaction.sentiment === "Positive"}
+                disabled
+                readOnly
+              />
               😊 Positive
             </label>
 
             <label>
-              <input disabled type="radio" />
+              <input
+                type="radio"
+                checked={interaction.sentiment === "Neutral"}
+                disabled
+                readOnly
+              />
               😐 Neutral
             </label>
 
             <label>
-              <input disabled type="radio" />
+              <input
+                type="radio"
+                checked={interaction.sentiment === "Negative"}
+                disabled
+                readOnly
+              />
               😟 Negative
             </label>
 
@@ -135,23 +205,29 @@ function InteractionForm() {
         </div>
 
         <div className="form-group">
+
           <label>Outcomes</label>
 
           <textarea
             rows="4"
-            placeholder="Key outcomes or agreements..."
+            value={interaction.outcomes}
             disabled
+            readOnly
           />
+
         </div>
 
         <div className="form-group">
+
           <label>Follow-up Actions</label>
 
           <textarea
             rows="4"
-            placeholder="Describe follow-up actions..."
+            value={interaction.followUp}
             disabled
+            readOnly
           />
+
         </div>
 
       </div>

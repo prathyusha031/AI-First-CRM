@@ -1,26 +1,32 @@
-export default function ChatWindow() {
+import { useSelector } from "react-redux";
+
+function ChatWindow() {
+  const { messages } = useSelector((state) => state.chat);
+
   return (
     <div className="chat-window">
+      {messages.map((message) => (
+        <div
+          key={message.id}
+          className={`message ${message.role === "user" ? "user" : ""}`}
+        >
+          <div className="avatar">
+            {message.role === "assistant" ? "🤖" : "👤"}
+          </div>
 
-      <div className="message assistant">
+          <div className="bubble">
+            <strong>
+              {message.role === "assistant"
+                ? "AI Assistant"
+                : "You"}
+            </strong>
 
-        <div className="avatar">
-          🤖
+            <p>{message.content}</p>
+          </div>
         </div>
-
-        <div className="bubble">
-
-          <strong>AI Assistant</strong>
-
-          <p>
-            Describe your interaction naturally.
-            I'll extract all CRM fields automatically.
-          </p>
-
-        </div>
-
-      </div>
-
+      ))}
     </div>
   );
 }
+
+export default ChatWindow;
