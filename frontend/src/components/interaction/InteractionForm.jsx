@@ -164,43 +164,43 @@ function InteractionForm() {
 
         <div className="form-group">
 
-          <label>Observed/Inferred HCP Sentiment</label>
+  <label>Observed/Inferred HCP Sentiment</label>
 
-          <div className="radio-row">
+  <div className="radio-row">
 
-            <label>
-              <input
-                type="radio"
-                checked={interaction.sentiment === "Positive"}
-                disabled
-                readOnly
-              />
-              😊 Positive
-            </label>
+    <label>
+      <input
+        type="radio"
+        checked={interaction.sentiment?.toLowerCase() === "positive"}
+        disabled
+        readOnly
+      />
+      😊 Positive
+    </label>
 
-            <label>
-              <input
-                type="radio"
-                checked={interaction.sentiment === "Neutral"}
-                disabled
-                readOnly
-              />
-              😐 Neutral
-            </label>
+    <label>
+      <input
+        type="radio"
+        checked={interaction.sentiment?.toLowerCase() === "neutral"}
+        disabled
+        readOnly
+      />
+      😐 Neutral
+    </label>
 
-            <label>
-              <input
-                type="radio"
-                checked={interaction.sentiment === "Negative"}
-                disabled
-                readOnly
-              />
-              😟 Negative
-            </label>
+    <label>
+      <input
+        type="radio"
+        checked={interaction.sentiment?.toLowerCase() === "negative"}
+        disabled
+        readOnly
+      />
+      😟 Negative
+    </label>
 
-          </div>
+  </div>
 
-        </div>
+</div>
 
         <div className="form-group">
 

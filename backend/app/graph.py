@@ -8,9 +8,9 @@ import json
 load_dotenv()
 
 llm = ChatGroq(
-    model="gemma2-9b-it",
+    model="llama-3.3-70b-versatile",
     temperature=0,
-    api_key=os.getenv("GROQ_API_KEY")
+    api_key=os.getenv("GROQ_API_KEY"),
 )
 
 
@@ -20,21 +20,29 @@ class CRMState(TypedDict):
 
 
 PROMPT = """
-You are an AI Healthcare CRM assistant.
+You are an AI Healthcare CRM Assistant.
 
-Extract ONLY the following JSON.
+Extract ONLY valid JSON.
+
+Rules:
+
+- "met" -> Meeting
+- "called" -> Call
+- "emailed" -> Email
+
+Return:
 
 {
-"hcp_name":"",
-"interaction_type":"",
-"date":"",
-"time":"",
-"topics_discussed":"",
-"materials_shared":"",
-"samples_distributed":"",
-"sentiment":"",
-"outcomes":"",
-"follow_up":""
+    "hcp_name":"",
+    "interaction_type":"",
+    "date":"",
+    "time":"",
+    "topics_discussed":"",
+    "materials_shared":"",
+    "samples_distributed":"",
+    "sentiment":"",
+    "outcomes":"",
+    "follow_up":""
 }
 
 Return ONLY JSON.
@@ -47,33 +55,130 @@ def log_interaction(state: CRMState):
 
     response = llm.invoke(PROMPT + state["user_input"])
 
+    print("\n========== RAW LLM RESPONSE ==========")
+    print(response.content)
+    print("======================================\n")
+
+    text = response.content.strip()
+
+    text = text.replace("```json", "")
+    text = text.replace("```", "").strip()
+
+    start = text.find("{")
+    end = text.rfind("}")
+
+    if start != -1 and end != -1:
+        text = text[start:end + 1]
+
     try:
-        data = json.loads(response.content)
-    except Exception:
-        data = {
-            "hcp_name": "",
-            "interaction_type": "",
-            "date": "",
-            "time": "",
-            "topics_discussed": "",
-            "materials_shared": "",
-            "samples_distributed": "",
-            "sentiment": "",
-            "outcomes": "",
-            "follow_up": ""
-        }
+        data = json.loads(text)
+
+    except Exception as e:
+
+        print("JSON ERROR:", e)
+
+        data = {}
 
     return {
-        "crm_json": data
+        "crm_json": {
+            "hcp_name": data.get("hcp_name", ""),
+            "interaction_type": data.get("interaction_type", ""),
+            "interaction_date": data.get("date", ""),
+            "interaction_time": data.get("time", ""),
+            "attendees": "",
+            "topics_discussed": data.get("topics_discussed", ""),
+            "sentiment": data.get("sentiment", ""),
+            "outcomes": data.get("outcomes", ""),
+            "follow_up_actions": data.get("follow_up", ""),
+            "materials": (
+                [data.get("materials_shared")]
+                if data.get("materials_shared")
+                else []
+            ),
+            "samples": (
+                [data.get("samples_distributed")]
+                if data.get("samples_distributed")
+                else []
+            ),
+            "followups": (
+                [data.get("follow_up")]
+                if data.get("follow_up")
+                else []
+            ),
+        }
+    }
+
+
+def edit_interaction(state: CRMState):
+
+    response = llm.invoke(
+        "Update ONLY the requested CRM fields.\n\n"
+        + state["user_input"]
+    )
+
+    return {
+        "crm_json": {
+            "message": response.content
+        }
+    }
+
+
+def search_hcp_history(state: CRMState):
+
+    response = llm.invoke(
+        "Answer the user's CRM history request.\n\n"
+        + state["user_input"]
+    )
+
+    return {
+        "crm_json": {
+            "history": response.content
+        }
+    }
+
+
+def generate_followup(state: CRMState):
+
+    response = llm.invoke(
+        "Generate follow-up suggestions.\n\n"
+        + state["user_input"]
+    )
+
+    return {
+        "crm_json": {
+            "followup": response.content
+        }
+    }
+
+
+def generate_summary(state: CRMState):
+
+    response = llm.invoke(
+        "Summarize this CRM interaction.\n\n"
+        + state["user_input"]
+    )
+
+    return {
+        "crm_json": {
+            "summary": response.content
+        }
     }
 
 
 builder = StateGraph(CRMState)
 
 builder.add_node("log_interaction", log_interaction)
+builder.add_node("edit_interaction", edit_interaction)
+builder.add_node("search_hcp_history", search_hcp_history)
+builder.add_node("generate_followup", generate_followup)
+builder.add_node("generate_summary", generate_summary)
 
 builder.set_entry_point("log_interaction")
 
 builder.add_edge("log_interaction", END)
+builder.add_edge("edit_interaction", END)
+builder.add_edge("search_hcp_history", END)
+builder.add_edge("generate_followup", END)
+builder.add_edge("generate_summary", END)
 
-graph = builder.compile()
+crm_graph = builder.compile()

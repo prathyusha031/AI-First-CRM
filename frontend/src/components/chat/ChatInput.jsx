@@ -42,7 +42,9 @@ function ChatInput() {
 
     const data = await logInteraction(text);
 
-    console.log("Backend Response:", data);
+    console.log("========== BACKEND ==========");
+    console.log(JSON.stringify(data, null, 2));
+    console.log("=============================");
 
     dispatch(setInteraction(data));
 

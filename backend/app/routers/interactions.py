@@ -18,27 +18,59 @@ def log_interaction(
     db: Session = Depends(get_db),
 ):
 
-    state = {
-        "user_input": request.message,
-        "action": "log_interaction",
-        "structured_data": None,
-        "response": None,
-        "error": None,
-    }
+    message = request.message.lower()
 
-    result = crm_graph.invoke(state)
+    # ----------------------------
+    # Decide which LangGraph tool
+    # ----------------------------
 
-    if result.get("error"):
+    if "edit" in message or "update" in message or "change" in message:
+        action = "edit_interaction"
+
+    elif "history" in message or "previous" in message:
+        action = "search_hcp_history"
+
+    elif "summary" in message:
+        action = "generate_summary"
+
+    elif "follow-up" in message or "follow up" in message or "suggest" in message:
+        action = "generate_followup"
+
+    else:
+        action = "log_interaction"
+
+    # ----------------------------
+    # Run LangGraph
+    # ----------------------------
+
+    result = crm_graph.invoke(
+        {
+            "user_input": request.message,
+            "crm_json": {},
+        }
+    )
+
+    structured_data = result.get("crm_json", {})
+
+    if not structured_data:
         raise HTTPException(
             status_code=500,
-            detail=result["error"],
+            detail="AI failed to process the request.",
         )
 
-    structured_data = result["structured_data"]
+    # ----------------------------
+    # Save ONLY new interactions
+    # ----------------------------
 
-    save_interaction(
-        db=db,
-        data=structured_data,
-    )
+    if action == "log_interaction":
+
+        save_interaction(
+            db=db,
+            data=structured_data,
+        )
+
+    # ----------------------------
+    # Return AI response
+    # ----------------------------
 
     return structured_data
