@@ -22,30 +22,74 @@ class CRMState(TypedDict):
 PROMPT = """
 You are an AI Healthcare CRM Assistant.
 
-Extract ONLY valid JSON.
+Extract the interaction into ONLY valid JSON.
 
-Rules:
+STRICT RULES
 
-- "met" -> Meeting
-- "called" -> Call
-- "emailed" -> Email
+1. Return ONLY JSON.
+2. Do NOT explain anything.
+3. Do NOT use markdown.
+4. Never return null.
+5. Unknown values should be "" or [].
 
-Return:
+Date Rules
+- Convert relative dates.
+- today -> current date in YYYY-MM-DD
+- yesterday -> previous date in YYYY-MM-DD
+- tomorrow -> next date in YYYY-MM-DD
+- next Tuesday -> actual YYYY-MM-DD date
+
+Time Rules
+- Convert every time to 24-hour format.
+- 2 PM -> 14:00
+- 11 AM -> 11:00
+- 9:30 PM -> 21:30
+
+Interaction Type
+- met -> Meeting
+- meeting -> Meeting
+- called -> Call
+- phone -> Call
+- emailed -> Email
+
+Sentiment
+Must be exactly one of:
+
+Positive
+Neutral
+Negative
+
+Extract:
+
+- hcp_name
+- interaction_type
+- interaction_date
+- interaction_time
+- attendees
+- topics_discussed
+- sentiment
+- outcomes
+- follow_up_actions
+- materials
+- samples
+- followups
+
+Return EXACTLY this JSON format:
 
 {
     "hcp_name":"",
     "interaction_type":"",
-    "date":"",
-    "time":"",
+    "interaction_date":"",
+    "interaction_time":"",
+    "attendees":"",
     "topics_discussed":"",
-    "materials_shared":"",
-    "samples_distributed":"",
     "sentiment":"",
     "outcomes":"",
-    "follow_up":""
+    "follow_up_actions":"",
+    "materials":[],
+    "samples":[],
+    "followups":[]
 }
-
-Return ONLY JSON.
 
 User:
 """
@@ -83,28 +127,16 @@ def log_interaction(state: CRMState):
         "crm_json": {
             "hcp_name": data.get("hcp_name", ""),
             "interaction_type": data.get("interaction_type", ""),
-            "interaction_date": data.get("date", ""),
-            "interaction_time": data.get("time", ""),
+         "interaction_date": data.get("interaction_date", ""),
+"interaction_time": data.get("interaction_time", ""),
             "attendees": "",
             "topics_discussed": data.get("topics_discussed", ""),
             "sentiment": data.get("sentiment", ""),
             "outcomes": data.get("outcomes", ""),
-            "follow_up_actions": data.get("follow_up", ""),
-            "materials": (
-                [data.get("materials_shared")]
-                if data.get("materials_shared")
-                else []
-            ),
-            "samples": (
-                [data.get("samples_distributed")]
-                if data.get("samples_distributed")
-                else []
-            ),
-            "followups": (
-                [data.get("follow_up")]
-                if data.get("follow_up")
-                else []
-            ),
+           "follow_up_actions": data.get("follow_up_actions", ""),
+            "materials": data.get("materials", []),
+            "samples": data.get("samples", []),
+            "followups": data.get("followups", []),
         }
     }
 

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 
 import { addMessage } from "../../redux/slices/chatSlice";
 import {
@@ -12,6 +12,10 @@ import { logInteraction } from "../../services/interactionService";
 
 function ChatInput() {
   const dispatch = useDispatch();
+
+  const loading = useSelector(
+  (state) => state.interaction.loading
+);
 
   const [message, setMessage] = useState("");
 
@@ -37,6 +41,14 @@ function ChatInput() {
 
   dispatch(setLoading(true));
 
+  dispatch(
+  addMessage({
+    id: Date.now() + 100,
+    role: "assistant",
+    content: "Analyzing interaction...",
+  })
+);
+
   try {
     console.log("Calling backend...");
 
@@ -48,13 +60,14 @@ function ChatInput() {
 
     dispatch(setInteraction(data));
 
-    dispatch(
-      addMessage({
-        id: Date.now() + 1,
-        role: "assistant",
-        content: "Interaction logged successfully.",
-      })
-    );
+   dispatch(
+  addMessage({
+    id: Date.now() + 1,
+    role: "assistant",
+    content:
+      "I've analyzed your interaction, extracted the CRM details, and automatically updated the interaction form.",
+  })
+);
 
     setMessage("");
 
@@ -67,7 +80,8 @@ function ChatInput() {
       addMessage({
         id: Date.now() + 1,
         role: "assistant",
-        content: "Backend request failed.",
+        content:
+  "Sorry, I couldn't process your request. Please try again.",
       })
     );
   }
@@ -82,9 +96,12 @@ Met Dr. Sharma today at 11 AM. Discussed Product X, shared one brochure and two 
         onChange={(e) => setMessage(e.target.value)}
       />
 
-      <button onClick={handleSubmit}>
-        Send
-      </button>
+      <button
+  onClick={handleSubmit}
+  disabled={loading}
+>
+  {loading ? "Thinking..." : "Send"}
+</button>
     </div>
   );
 }
