@@ -2,9 +2,16 @@ from fastapi import APIRouter, HTTPException, Depends
 from sqlalchemy.orm import Session
 
 from app.database.database import get_db
-from app.graph import crm_graph
 from app.schemas.interaction import ChatRequest
 from app.services.interaction_service import save_interaction
+
+from app.graph import (
+    log_interaction,
+    edit_interaction,
+    search_hcp_history,
+    generate_followup,
+    generate_summary,
+)
 
 router = APIRouter(
     prefix="/interactions",
@@ -13,64 +20,62 @@ router = APIRouter(
 
 
 @router.post("/log")
-def log_interaction(
+def interaction_router(
     request: ChatRequest,
     db: Session = Depends(get_db),
 ):
 
     message = request.message.lower()
 
-    # ----------------------------
-    # Decide which LangGraph tool
-    # ----------------------------
+    state = {
+        "user_input": request.message,
+        "crm_json": {},
+    }
+
+    # -------------------------
+    # Decide which tool to run
+    # -------------------------
 
     if "edit" in message or "update" in message or "change" in message:
-        action = "edit_interaction"
+
+        result = edit_interaction(state)
+
+        return result["crm_json"]
 
     elif "history" in message or "previous" in message:
-        action = "search_hcp_history"
+
+        result = search_hcp_history(state)
+
+        return result["crm_json"]
 
     elif "summary" in message:
-        action = "generate_summary"
 
-    elif "follow-up" in message or "follow up" in message or "suggest" in message:
-        action = "generate_followup"
+        result = generate_summary(state)
 
-    else:
-        action = "log_interaction"
+        return result["crm_json"]
 
-    # ----------------------------
-    # Run LangGraph
-    # ----------------------------
+    elif (
+           "suggest follow-up" in message
+           or "suggest follow up" in message
+           or "generate follow-up" in message
+           or "generate follow up" in message
+    ):
 
-    result = crm_graph.invoke(
-        {
-            "user_input": request.message,
-            "crm_json": {},
-        }
+        result = generate_followup(state)
+
+        return result["crm_json"]
+
+    # -------------------------
+    # Default → Log Interaction
+    # -------------------------
+
+    result = log_interaction(state)
+
+    structured_data = result["crm_json"]
+
+    save_interaction(
+        db=db,
+        data=structured_data,
     )
-
-    structured_data = result.get("crm_json", {})
-
-    if not structured_data:
-        raise HTTPException(
-            status_code=500,
-            detail="AI failed to process the request.",
-        )
-
-    # ----------------------------
-    # Save ONLY new interactions
-    # ----------------------------
-
-    if action == "log_interaction":
-
-        save_interaction(
-            db=db,
-            data=structured_data,
-        )
-
-    # ----------------------------
-    # Return AI response
-    # ----------------------------
 
     return structured_data
