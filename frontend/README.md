@@ -1,16 +1,51 @@
-# React + Vite
+# AI First CRM
 
-This template provides a minimal setup to get React working in Vite with HMR and some Oxlint rules.
+AI-powered Healthcare Professional (HCP) CRM Interaction Assistant.
 
-Currently, two official plugins are available:
+## Tech Stack
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+Frontend
+- React (Vite)
+- Redux Toolkit
+- Axios
 
-## React Compiler
+Backend
+- FastAPI
+- SQLAlchemy
+- PostgreSQL
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+AI
+- LangGraph
+- LangChain
+- Groq (Llama 3.3 70B)
 
-## Expanding the Oxlint configuration
+## Features
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and Oxlint's TypeScript related rules in your project.
+- AI-powered interaction logging
+- Automatic CRM field extraction
+- Structured JSON generation
+- PostgreSQL persistence
+- Material & sample tracking
+- Sentiment detection
+- Follow-up generation
+- CRM summaries
+- Interaction history
+- Split-screen AI assistant interface
+
+## Architecture
+
+React
+↓
+Redux
+↓
+FastAPI
+↓
+LangGraph
+↓
+Groq LLM
+↓
+Structured JSON
+↓
+Redux Store
+↓
+Automatic CRM Form Updates
